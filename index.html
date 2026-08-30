@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Student Portfolio</title>
+
+  <!-- Google Fonts:
+       - Space Grotesk = headings (bold, geometric, a little unusual)
+       - Inter         = body text (easy to read)
+       - IBM Plex Mono = dates / scores / labels (looks like report-card data) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ============================================================
+       NAVIGATION BAR
+       This turns into a row of "binder tabs" down the left side on
+       desktop, and a scrollable bar at the top on mobile.
+       ============================================================ -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-brand">
+      <span class="nav-brand-mark">SP</span>
+      <span class="nav-brand-text">Student<br>Portfolio</span>
+    </div>
+
+    <ul class="nav-links">
+      <li><a href="#home" class="nav-link active" data-section="home">Home</a></li>
+      <li><a href="#about" class="nav-link" data-section="about">About Me</a></li>
+      <li><a href="#quizzes" class="nav-link" data-section="quizzes">Quizzes</a></li>
+      <li><a href="#labs" class="nav-link" data-section="labs">Lab Activities</a></li>
+      <li><a href="#midterm" class="nav-link" data-section="midterm">Midterm Exam</a></li>
+      <li><a href="#final" class="nav-link" data-section="final">Final Exam</a></li>
+      <li><a href="#projects" class="nav-link" data-section="projects">Projects</a></li>
+      <li><a href="#gallery" class="nav-link" data-section="gallery">Gallery</a></li>
+    </ul>
+
+    <button class="theme-toggle" id="themeToggle" title="Toggle light / dark mode" aria-label="Toggle light and dark mode">
+      <span class="theme-icon">🌙</span>
+    </button>
+  </nav>
+
+  <!-- ============================================================
+       MAIN CONTENT
+       ============================================================ -->
+  <main class="main-content">
+
+    <!-- ---------- HOME ---------- -->
+    <section id="home" class="section home-section">
+      <div class="home-stamp">EST. <span id="homeYear">2026</span></div>
+      <div class="home-hero">
+        <div class="home-photo-wrap">
+          <img id="homeProfilePic" class="home-photo" src="images/profile.jpg" alt="Profile picture" />
+        </div>
+        <div class="home-text">
+          <p class="eyebrow">Welcome to the academic record of</p>
+          <h1 id="homeName" class="home-name">Your Name Here</h1>
+          <p id="homeWelcome" class="home-welcome">
+            Hi! This is my personal portfolio, where I keep track of my quizzes, laboratory
+            activities, exams, and projects — all in one place.
+          </p>
+          <p class="home-intro">
+            Use the navigation on the left to explore my <strong>About Me</strong> page, or jump straight
+            into my recorded <strong>Quizzes</strong>, <strong>Laboratory Activities</strong>,
+            <strong>Midterm</strong> and <strong>Final Exams</strong>, and <strong>Projects</strong>.
+            Every entry below was added by me, right here in the browser — click any
+            "+ Add" button to start building your own record.
+          </p>
+          <a href="#about" class="btn btn-primary" data-section="about">View About Me →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- ABOUT ME ---------- -->
+    <section id="about" class="section about-section">
+      <div class="section-header">
+        <p class="eyebrow">Personal Record</p>
+        <h2 class="section-title">About Me</h2>
+        <button class="btn btn-outline" id="editAboutBtn">✎ Edit Info</button>
+      </div>
+
+      <div class="about-card">
+        <div class="about-photo-wrap">
+          <img id="aboutProfilePic" class="about-photo" src="" alt="Profile picture" />
+          <label class="photo-upload-label" for="aboutPhotoInput">Change photo</label>
+          <input type="file" id="aboutPhotoInput" accept="image/*" hidden />
+          <br>
+          <button type="button" class="photo-remove-label" id="removeAboutPhotoBtn">Remove photo</button>
+        </div>
+
+        <dl class="about-details" id="aboutDetails">
+          <!-- Filled in by JavaScript from localStorage / placeholder data -->
+        </dl>
+      </div>
+    </section>
+
+    <!-- ---------- QUIZZES ---------- -->
+    <section id="quizzes" class="section data-section" data-category="quizzes">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Section 03</p>
+          <h2 class="section-title">Quizzes</h2>
+        </div>
+        <button class="btn btn-primary" data-add="quizzes">+ Add Quiz</button>
+      </div>
+      <div class="card-grid" id="grid-quizzes"><!-- cards injected here --></div>
+    </section>
+
+    <!-- ---------- LABORATORY ACTIVITIES ---------- -->
+    <section id="labs" class="section data-section" data-category="labs">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Section 04</p>
+          <h2 class="section-title">Laboratory Activities</h2>
+        </div>
+        <button class="btn btn-primary" data-add="labs">+ Add Laboratory Activity</button>
+      </div>
+      <div class="card-grid" id="grid-labs"></div>
+    </section>
+
+    <!-- ---------- MIDTERM EXAM ---------- -->
+    <section id="midterm" class="section data-section" data-category="midterm">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Section 05</p>
+          <h2 class="section-title">Midterm Exam</h2>
+        </div>
+        <button class="btn btn-primary" data-add="midterm">+ Add Midterm Exam</button>
+      </div>
+      <div class="card-grid" id="grid-midterm"></div>
+    </section>
+
+    <!-- ---------- FINAL EXAM ---------- -->
+    <section id="final" class="section data-section" data-category="final">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Section 06</p>
+          <h2 class="section-title">Final Exam</h2>
+        </div>
+        <button class="btn btn-primary" data-add="final">+ Add Final Exam</button>
+      </div>
+      <div class="card-grid" id="grid-final"></div>
+    </section>
+
+    <!-- ---------- PROJECTS ---------- -->
+    <section id="projects" class="section data-section" data-category="projects">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Section 07</p>
+          <h2 class="section-title">Projects</h2>
+        </div>
+        <button class="btn btn-primary" data-add="projects">+ Add Project</button>
+      </div>
+      <div class="card-grid" id="grid-projects"></div>
+    </section>
+
+    <!-- ---------- GALLERY (auto-generated, read-only) ---------- -->
+    <section id="gallery" class="section gallery-section">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Section 08 · Auto-generated</p>
+          <h2 class="section-title">Gallery</h2>
+        </div>
+      </div>
+      <p class="gallery-hint">
+        Every picture you upload inside Quizzes, Laboratory Activities, Exams, and Projects
+        automatically shows up here too.
+      </p>
+      <div class="gallery-grid" id="galleryGrid"></div>
+    </section>
+
+    <footer class="site-footer">
+      <p>Built with HTML, CSS &amp; vanilla JavaScript · Your data is saved only in this browser (localStorage).</p>
+    </footer>
+
+  </main>
+
+  <!-- ============================================================
+       GENERIC ADD / EDIT MODAL
+       One modal is reused for every category. JavaScript fills in
+       the title and fields based on which category was clicked.
+       ============================================================ -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h3 id="modalTitle">Add Entry</h3>
+        <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+      </div>
+      <form id="entryForm" class="modal-form">
+        <div id="modalFields"><!-- dynamic form fields injected here --></div>
+
+        <div class="image-preview-wrap" id="imagePreviewWrap" hidden>
+          <p class="field-label">Preview</p>
+          <img id="imagePreview" class="image-preview" alt="Selected picture preview" />
+          <button type="button" class="btn btn-outline btn-sm remove-photo-btn" id="removeImageBtn">✕ Remove Picture</button>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" id="modalCancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="modalSave">Save Entry</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       ABOUT ME EDIT MODAL (separate, since its fields are fixed)
+       ============================================================ -->
+  <div class="modal-overlay" id="aboutModalOverlay">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h3>Edit About Me</h3>
+        <button class="modal-close" id="aboutModalClose" aria-label="Close">✕</button>
+      </div>
+      <form id="aboutForm" class="modal-form">
+        <label class="field-label">Full Name
+          <input type="text" id="field-fullName" required>
+        </label>
+        <label class="field-label">Age
+          <input type="number" id="field-age" min="1" max="120">
+        </label>
+        <label class="field-label">Course / Program
+          <input type="text" id="field-course">
+        </label>
+        <label class="field-label">School
+          <input type="text" id="field-school">
+        </label>
+        <label class="field-label">Year & Section
+          <input type="text" id="field-yearLevel">
+        </label>
+        <label class="field-label">Hobbies
+          <input type="text" id="field-hobbies" placeholder="Separate with commas">
+        </label>
+        <label class="field-label">Short Description
+          <textarea id="field-shortDesc" rows="3"></textarea>
+        </label>
+        <label class="field-label">Welcome Message (shown on Home)
+          <textarea id="field-welcome" rows="2"></textarea>
+        </label>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" id="aboutModalCancel">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Info</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       DELETE CONFIRMATION MODAL
+       ============================================================ -->
+  <div class="modal-overlay" id="confirmOverlay">
+    <div class="modal modal-small" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h3>Delete this entry?</h3>
+      </div>
+      <p class="confirm-text">This can't be undone. The entry and its picture will be permanently removed.</p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline" id="confirmCancel">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       TOAST (small pop-up message, e.g. "Quiz saved!")
+       ============================================================ -->
+  <div class="toast" id="toast"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
