@@ -10,10 +10,12 @@
    3. RENDERING            -> turn stored data into HTML on the page.
    4. MODAL (ADD/EDIT)     -> the pop-up form shared by every category.
    5. ABOUT ME             -> its own small modal (fixed set of fields).
-   6. DELETE CONFIRMATION  -> shared "are you sure?" pop-up.
-   7. THEME TOGGLE         -> light / dark mode, remembered in localStorage.
-   8. NAVBAR ACTIVE STATE  -> highlights the current section while scrolling.
-   9. INIT                 -> runs everything when the page loads.
+   6. EXPORT CODE          -> turns a category's entries into paste-ready
+                               code so you can publish them for everyone.
+   7. DELETE CONFIRMATION  -> shared "are you sure?" pop-up.
+   8. THEME TOGGLE         -> light / dark mode, remembered in localStorage.
+   9. NAVBAR ACTIVE STATE  -> highlights the current section while scrolling.
+   10. INIT                -> runs everything when the page loads.
    ========================================================================== */
 
 /* ---------- 1. CATEGORY CONFIG ---------- */
@@ -96,6 +98,22 @@ const CATEGORIES = [
 
 const ABOUT_KEY = 'sp_about';
 
+// ---------------------------------------------------------------------------
+// PUBLISHED ENTRIES — this is where your quizzes/labs/exams/projects live
+// once you "publish" them so EVERY visitor sees them (not just your own
+// browser). Start empty; use the "Export Code" button in each section to
+// generate the replacement array below, then paste it in and re-upload
+// script.js to GitHub. Example after exporting quizzes:
+//   quizzes: [ { id: "abc123", title: "Quiz 1", subject: "Web Dev", ... } ]
+// ---------------------------------------------------------------------------
+const DEFAULT_ENTRIES = {
+  quizzes: [],
+  labs: [],
+  midterm: [],
+  final: [],
+  projects: []
+};
+
 // Placeholder "About Me" data — edit through the "Edit Info" button,
 // or just change these defaults directly.
 const DEFAULT_ABOUT = {
@@ -113,9 +131,15 @@ const DEFAULT_ABOUT = {
 /* ---------- 2. STORAGE HELPERS ---------- */
 
 // Get the saved list of entries for a category (or an empty array).
-function getEntries(storageKey) {
-  const raw = localStorage.getItem(storageKey);
-  return raw ? JSON.parse(raw) : [];
+// The FIRST time this runs in a browser (nothing saved yet), it starts
+// from DEFAULT_ENTRIES — the "published" list everyone sees. After that,
+// this browser's own edits (add/edit/delete) take over as usual.
+function getEntries(cat) {
+  const raw = localStorage.getItem(cat.storageKey);
+  if (raw) return JSON.parse(raw);
+  const published = DEFAULT_ENTRIES[cat.id] || [];
+  saveEntries(cat.storageKey, published);
+  return published;
 }
 
 // Save a category's full list of entries back to localStorage.
@@ -141,7 +165,7 @@ function makeId() {
 
 function renderCategory(cat) {
   const grid = document.getElementById(`grid-${cat.id}`);
-  const entries = getEntries(cat.storageKey);
+  const entries = getEntries(cat);
 
   if (entries.length === 0) {
     grid.innerHTML = `
@@ -227,7 +251,7 @@ function renderGallery() {
   const items = [];
 
   CATEGORIES.forEach(cat => {
-    getEntries(cat.storageKey).forEach(entry => {
+    getEntries(cat).forEach(entry => {
       if (entry.image) {
         items.push({
           image: entry.image,
@@ -306,7 +330,7 @@ function openEntryModal(catId, editId = null) {
   currentEditId = editId;
   currentImageData = '';
 
-  const existing = editId ? getEntries(currentCategory.storageKey).find(e => e.id === editId) : null;
+  const existing = editId ? getEntries(currentCategory).find(e => e.id === editId) : null;
   currentImageData = existing?.image || '';
 
   modalTitle.textContent = editId ? `Edit ${currentCategory.singular}` : `Add ${currentCategory.singular}`;
@@ -374,7 +398,7 @@ function closeEntryModal() {
 entryForm.addEventListener('submit', e => {
   e.preventDefault();
   const cat = currentCategory;
-  const entries = getEntries(cat.storageKey);
+  const entries = getEntries(cat);
 
   const data = { id: currentEditId || makeId(), image: currentImageData };
   cat.fields.forEach(field => {
@@ -485,7 +509,42 @@ document.getElementById('removeAboutPhotoBtn').addEventListener('click', () => {
   showToast('Profile picture removed.');
 });
 
-/* ---------- 6. DELETE CONFIRMATION ---------- */
+/* ---------- 6. EXPORT CODE (publish entries for every visitor) ---------- */
+
+const exportModalOverlay = document.getElementById('exportModalOverlay');
+const exportModalTitle = document.getElementById('exportModalTitle');
+const exportCodeArea = document.getElementById('exportCodeArea');
+
+function openExportModal(catId) {
+  const cat = CATEGORIES.find(c => c.id === catId);
+  const entries = getEntries(cat);
+
+  exportModalTitle.textContent = `Export Code — ${cat.singular}`;
+  // Pretty-print as a JS array literal, indented to match DEFAULT_ENTRIES.
+  const code = `  ${cat.id}: ${JSON.stringify(entries, null, 2).replace(/\n/g, '\n  ')},`;
+  exportCodeArea.value = code;
+
+  exportModalOverlay.classList.add('open');
+}
+
+function closeExportModal() { exportModalOverlay.classList.remove('open'); }
+
+document.querySelectorAll('[data-export]').forEach(btn => {
+  btn.addEventListener('click', () => openExportModal(btn.dataset.export));
+});
+
+document.getElementById('exportModalClose').addEventListener('click', closeExportModal);
+document.getElementById('exportModalCancel').addEventListener('click', closeExportModal);
+exportModalOverlay.addEventListener('click', e => { if (e.target === exportModalOverlay) closeExportModal(); });
+
+document.getElementById('exportCopyBtn').addEventListener('click', () => {
+  exportCodeArea.select();
+  navigator.clipboard.writeText(exportCodeArea.value)
+    .then(() => showToast('Code copied!'))
+    .catch(() => showToast('Copy failed — select the text manually.'));
+});
+
+/* ---------- 7. DELETE CONFIRMATION ---------- */
 
 const confirmOverlay = document.getElementById('confirmOverlay');
 let pendingDelete = null; // { catId, id }
@@ -506,7 +565,7 @@ confirmOverlay.addEventListener('click', e => { if (e.target === confirmOverlay)
 document.getElementById('confirmDelete').addEventListener('click', () => {
   if (!pendingDelete) return;
   const cat = CATEGORIES.find(c => c.id === pendingDelete.catId);
-  const remaining = getEntries(cat.storageKey).filter(e => e.id !== pendingDelete.id);
+  const remaining = getEntries(cat).filter(e => e.id !== pendingDelete.id);
   saveEntries(cat.storageKey, remaining);
   renderCategory(cat);
   renderGallery();
@@ -514,7 +573,7 @@ document.getElementById('confirmDelete').addEventListener('click', () => {
   closeDeleteConfirm();
 });
 
-/* ---------- 7. THEME TOGGLE ---------- */
+/* ---------- 8. THEME TOGGLE ---------- */
 
 const themeToggle = document.getElementById('themeToggle');
 
@@ -529,7 +588,7 @@ themeToggle.addEventListener('click', () => {
   applyTheme(isDark ? 'light' : 'dark');
 });
 
-/* ---------- 8. NAVBAR ACTIVE STATE (scroll-spy) ---------- */
+/* ---------- 9. NAVBAR ACTIVE STATE (scroll-spy) ---------- */
 
 const navLinks = document.querySelectorAll('.nav-link');
 
@@ -551,7 +610,7 @@ const sectionObserver = new IntersectionObserver(entries => {
 
 document.querySelectorAll('.section').forEach(sec => sectionObserver.observe(sec));
 
-/* ---------- 9. INIT ---------- */
+/* ---------- 10. INIT ---------- */
 
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('homeYear').textContent = new Date().getFullYear();
