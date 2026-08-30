@@ -107,7 +107,7 @@ const DEFAULT_ABOUT = {
   hobbies: 'Online games, Basketball',
   shortDesc: 'A curious student who loves learning new things and building small projects on the side.',
   welcome: "Hi! This is my personal portfolio, where I keep track of my quizzes, laboratory activities, exams, and projects — all in one place.",
-  photo: 'images/profile.jpg' // default profile picture — replace this file to change it later
+  photo: 'profile.jpg' // default profile picture — replace this file to change it later
 };
 
 /* ---------- 2. STORAGE HELPERS ---------- */
