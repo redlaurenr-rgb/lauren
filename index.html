@@ -53,7 +53,7 @@
       <div class="home-stamp">EST. <span id="homeYear">2026</span></div>
       <div class="home-hero">
         <div class="home-photo-wrap">
-          <img id="homeProfilePic" class="home-photo" src="images/profile.jpg" alt="Profile picture" />
+          <img id="homeProfilePic" class="home-photo" src="" alt="Profile picture" />
         </div>
         <div class="home-text">
           <p class="eyebrow">Welcome to the academic record of</p>
@@ -104,7 +104,10 @@
           <p class="eyebrow">Section 03</p>
           <h2 class="section-title">Quizzes</h2>
         </div>
-        <button class="btn btn-primary" data-add="quizzes">+ Add Quiz</button>
+        <div class="header-actions">
+          <button class="btn btn-primary" data-add="quizzes">+ Add Quiz</button>
+          <button class="btn btn-outline" data-export="quizzes">⭳ Export Code</button>
+        </div>
       </div>
       <div class="card-grid" id="grid-quizzes"><!-- cards injected here --></div>
     </section>
@@ -116,7 +119,10 @@
           <p class="eyebrow">Section 04</p>
           <h2 class="section-title">Laboratory Activities</h2>
         </div>
-        <button class="btn btn-primary" data-add="labs">+ Add Laboratory Activity</button>
+        <div class="header-actions">
+          <button class="btn btn-primary" data-add="labs">+ Add Laboratory Activity</button>
+          <button class="btn btn-outline" data-export="labs">⭳ Export Code</button>
+        </div>
       </div>
       <div class="card-grid" id="grid-labs"></div>
     </section>
@@ -128,7 +134,10 @@
           <p class="eyebrow">Section 05</p>
           <h2 class="section-title">Midterm Exam</h2>
         </div>
-        <button class="btn btn-primary" data-add="midterm">+ Add Midterm Exam</button>
+        <div class="header-actions">
+          <button class="btn btn-primary" data-add="midterm">+ Add Midterm Exam</button>
+          <button class="btn btn-outline" data-export="midterm">⭳ Export Code</button>
+        </div>
       </div>
       <div class="card-grid" id="grid-midterm"></div>
     </section>
@@ -140,7 +149,10 @@
           <p class="eyebrow">Section 06</p>
           <h2 class="section-title">Final Exam</h2>
         </div>
-        <button class="btn btn-primary" data-add="final">+ Add Final Exam</button>
+        <div class="header-actions">
+          <button class="btn btn-primary" data-add="final">+ Add Final Exam</button>
+          <button class="btn btn-outline" data-export="final">⭳ Export Code</button>
+        </div>
       </div>
       <div class="card-grid" id="grid-final"></div>
     </section>
@@ -152,7 +164,10 @@
           <p class="eyebrow">Section 07</p>
           <h2 class="section-title">Projects</h2>
         </div>
-        <button class="btn btn-primary" data-add="projects">+ Add Project</button>
+        <div class="header-actions">
+          <button class="btn btn-primary" data-add="projects">+ Add Project</button>
+          <button class="btn btn-outline" data-export="projects">⭳ Export Code</button>
+        </div>
       </div>
       <div class="card-grid" id="grid-projects"></div>
     </section>
@@ -173,7 +188,7 @@
     </section>
 
     <footer class="site-footer">
-  
+      <p>Built with HTML, CSS &amp; vanilla JavaScript · Your data is saved only in this browser (localStorage).</p>
     </footer>
 
   </main>
@@ -261,6 +276,30 @@
       <div class="modal-actions">
         <button type="button" class="btn btn-outline" id="confirmCancel">Cancel</button>
         <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       EXPORT CODE MODAL
+       Shows the current entries of one category as ready-to-paste
+       JavaScript, so you can "publish" them for every visitor.
+       ============================================================ -->
+  <div class="modal-overlay" id="exportModalOverlay">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h3 id="exportModalTitle">Export Code</h3>
+        <button class="modal-close" id="exportModalClose" aria-label="Close">✕</button>
+      </div>
+      <p class="confirm-text">
+        Copy the code below and paste it in <code>script.js</code>, replacing that
+        category's array inside <code>DEFAULT_ENTRIES</code>. Then re-upload
+        <code>script.js</code> to GitHub so everyone sees these entries.
+      </p>
+      <textarea id="exportCodeArea" class="export-textarea" readonly rows="12"></textarea>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline" id="exportModalCancel">Close</button>
+        <button type="button" class="btn btn-primary" id="exportCopyBtn">📋 Copy Code</button>
       </div>
     </div>
   </div>
