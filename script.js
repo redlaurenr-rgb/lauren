@@ -102,7 +102,7 @@ const DEFAULT_ABOUT = {
   fullName: 'Red Lauren Reyes',
   age: '20',
   course: 'BS Computer Science',
-  school: 'Cavite State University-Silang Campus',
+  school: 'Cavite State University - Silang Campus',
   yearLevel: 'BSCS-3D',
   hobbies: 'Online games, Basketball',
   shortDesc: 'A curious student who loves learning new things and building small projects on the side.',
