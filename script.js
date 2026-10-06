@@ -144,7 +144,7 @@ const DEFAULT_ENTRIES = {
       "score": "43",
       "description": ""
     }
-  ],
+   ],
   labs: [],
   midterm: [],
   final: [],
