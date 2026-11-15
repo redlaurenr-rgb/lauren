@@ -198,12 +198,31 @@ const DEFAULT_ABOUT = {
 // The FIRST time this runs in a browser (nothing saved yet), it starts
 // from DEFAULT_ENTRIES — the "published" list everyone sees. After that,
 // this browser's own edits (add/edit/delete) take over as usual.
+function hashString(str) {
+  let h = 5381;
+  for (let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0;
+  return String(h);
+}
+
+const publishedSigCache = {};
+
 function getEntries(cat) {
-  const raw = localStorage.getItem(cat.storageKey);
-  if (raw) return JSON.parse(raw);
   const published = DEFAULT_ENTRIES[cat.id] || [];
-  saveEntries(cat.storageKey, published);
-  return published;
+  const sigKey = cat.storageKey + '_sig';
+
+  // Fingerprint ng naka-publish na listahan. Kapag nagbago ito sa script.js,
+  // babalik ang bawat browser sa bagong listahan.
+  if (!publishedSigCache[cat.id]) publishedSigCache[cat.id] = hashString(JSON.stringify(published));
+  const sig = publishedSigCache[cat.id];
+
+  const raw = localStorage.getItem(cat.storageKey);
+  if (!raw || localStorage.getItem(sigKey) !== sig) {
+    saveEntries(cat.storageKey, published);
+    localStorage.setItem(sigKey, sig);
+    return published;
+  }
+  return JSON.parse(raw);
+}
 }
 
 // Save a category's full list of entries back to localStorage.
