@@ -223,7 +223,6 @@ function getEntries(cat) {
   }
   return JSON.parse(raw);
 }
-}
 
 // Save a category's full list of entries back to localStorage.
 function saveEntries(storageKey, entries) {
